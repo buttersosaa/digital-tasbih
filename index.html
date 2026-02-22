@@ -5,12 +5,87 @@
 <title>Auto Tasbih Counter</title>
 
 <style>
-body{font-family:Arial;text-align:center;background:#0f172a;color:white;margin-top:20px;}
-#counter{font-size:60px;margin:10px;}
-.card{background:#1e293b;padding:10px;margin:10px auto;width:85%;border-radius:10px;}
-button{padding:10px;margin:4px;border:none;border-radius:10px;}
-canvas{background:white;border-radius:10px;}
+/* Base styles */
+body {
+    font-family: 'Orbitron', Arial, sans-serif;
+    text-align: center;
+    background: #000000;
+    color: #00fffa;
+    margin: 0;
+    padding-top: 30px;
+}
+
+/* Main counter display */
+#counter {
+    font-size: 80px;
+    margin: 20px;
+    color: #00fffa;
+    text-shadow: 0 0 20px #00fffa, 0 0 40px #00fffa;
+}
+
+/* Cards */
+.card {
+    background: #111111;
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 15px;
+    border: 2px solid #00fffa;
+    box-shadow: 0 0 20px #00fffa50;
+}
+
+/* Buttons */
+button {
+    padding: 12px 25px;
+    margin: 8px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #00fffa, #0066ff);
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #00fffa;
+}
+
+/* Input for target */
+input[type="number"] {
+    padding: 8px;
+    border-radius: 10px;
+    border: 2px solid #00fffa;
+    background: #111111;
+    color: #00fffa;
+    width: 80px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Headings */
+h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    color: #00fffa;
+    text-shadow: 0 0 10px #00fffa;
+}
+
+h4 {
+    color: #00fffa;
+    text-shadow: 0 0 8px #00fffa;
+}
+
+/* Neon effect spans */
+span {
+    font-weight: bold;
+}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -27,16 +102,11 @@ Daily Target:
 <button onclick="stop()">Stop</button>
 
 <div class="card">
-<h4>🏆 Leaderboard</h4>
+<h4>📊 Count</h4>
 Daily: <span id="daily">0</span><br>
 Weekly: <span id="weekly">0</span><br>
 Monthly: <span id="monthly">0</span><br>
 Streak: <span id="streak">0</span> days 🔥
-</div>
-
-<div class="card">
-<h4>📊 Weekly Progress</h4>
-<canvas id="chart" width="300" height="150"></canvas>
 </div>
 
 <script>
@@ -50,58 +120,44 @@ let lastDay=localStorage.getItem("day");
 let today=new Date().getDate();
 
 if(lastDay!=today){
-if(daily>=localStorage.getItem("target")){
-streak++;
-}
-daily=0;
-localStorage.setItem("day",today);
+    if(daily>=localStorage.getItem("target")){
+        streak++;
+    }
+    daily=0;
+    localStorage.setItem("day",today);
 }
 
 update();
-drawChart();
 
 let auto;
 
 function tap(){
-count++;daily++;weekly++;monthly++;
-save();update();drawChart();
+    count++; daily++; weekly++; monthly++;
+    save(); update();
 }
 
-function reset(){count=0;save();update();}
+function reset(){ count=0; save(); update(); }
 
-function start(){auto=setInterval(tap,1500);}
-function stop(){clearInterval(auto);}
+function start(){ auto=setInterval(tap,1500); }
+function stop(){ clearInterval(auto); }
 
 function update(){
-document.getElementById("counter").innerText=count;
-document.getElementById("daily").innerText=daily;
-document.getElementById("weekly").innerText=weekly;
-document.getElementById("monthly").innerText=monthly;
-document.getElementById("streak").innerText=streak;
-localStorage.setItem("target",document.getElementById("dailyTarget").value);
+    document.getElementById("counter").innerText=count;
+    document.getElementById("daily").innerText=daily;
+    document.getElementById("weekly").innerText=weekly;
+    document.getElementById("monthly").innerText=monthly;
+    document.getElementById("streak").innerText=streak;
+    localStorage.setItem("target",document.getElementById("dailyTarget").value);
 }
 
 function save(){
-localStorage.setItem("count",count);
-localStorage.setItem("daily",daily);
-localStorage.setItem("weekly",weekly);
-localStorage.setItem("monthly",monthly);
-localStorage.setItem("streak",streak);
-}
-
-function drawChart(){
-let c=document.getElementById("chart");
-let ctx=c.getContext("2d");
-ctx.clearRect(0,0,300,150);
-let data=JSON.parse(localStorage.getItem("weekData"))||[0,0,0,0,0,0,0];
-data[new Date().getDay()]=daily;
-localStorage.setItem("weekData",JSON.stringify(data));
-for(let i=0;i<7;i++){
-ctx.fillRect(i*40,150-data[i]/2,30,data[i]/2);
-}
+    localStorage.setItem("count",count);
+    localStorage.setItem("daily",daily);
+    localStorage.setItem("weekly",weekly);
+    localStorage.setItem("monthly",monthly);
+    localStorage.setItem("streak",streak);
 }
 </script>
 
 </body>
 </html>
-
