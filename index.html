@@ -5,54 +5,44 @@
 <title>Auto Tasbih Counter</title>
 
 <style>
-/* Base styles */
+/* Calm and peaceful base */
 body {
-    font-family: 'Orbitron', Arial, sans-serif;
+    font-family: 'Nunito', Arial, sans-serif;
     text-align: center;
-    background: #000000;
-    color: #00ff00;
+    background: #f0f7f4;  /* soft pastel green */
+    color: #2d5d4c;
     margin: 0;
-    padding-top: 30px;
-    animation: fadeIn 1.5s ease-in-out;
-}
-
-/* Fade-in for welcoming effect */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    padding: 40px 20px;
+    transition: background 0.5s;
 }
 
 /* Main counter display */
 #counter {
-    font-size: 80px;
+    font-size: 70px;
     margin: 20px;
-    color: #00ff00;
-    text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00;
-    animation: pulse 2s infinite;
+    color: #4a7c59;
+    font-weight: bold;
+    transition: transform 0.2s;
 }
 
-/* Pulse animation */
-@keyframes pulse {
-    0%, 100% { text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00; }
-    50% { text-shadow: 0 0 30px #00ff00, 0 0 60px #00ff00, 0 0 90px #00ff00; }
+#counter:active {
+    transform: scale(1.1);
 }
 
 /* Cards */
 .card {
-    background: #111111;
+    background: #ffffff;
     padding: 20px;
     margin: 20px auto;
     width: 90%;
     max-width: 400px;
-    border-radius: 15px;
-    border: 2px solid #00ff00;
-    box-shadow: 0 0 20px #00ff2250;
-    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 40px #00ff2270;
 }
 
 /* Buttons */
@@ -60,28 +50,27 @@ button {
     padding: 12px 25px;
     margin: 8px;
     border: none;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #00ff00, #008000);
-    color: black;
+    border-radius: 15px;
+    background-color: #81c784;  /* soft green */
+    color: #ffffff;
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s;
-    text-transform: uppercase;
 }
 
 button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px #00ff00;
+    background-color: #66bb6a;
+    transform: scale(1.05);
 }
 
 /* Input for target */
 input[type="number"] {
-    padding: 8px;
+    padding: 10px;
     border-radius: 10px;
-    border: 2px solid #00ff00;
-    background: #111111;
-    color: #00ff00;
+    border: 1px solid #81c784;
+    background: #e8f5e9;
+    color: #2d5d4c;
     width: 80px;
     text-align: center;
     font-weight: bold;
@@ -90,24 +79,21 @@ input[type="number"] {
 
 /* Headings */
 h2 {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Nunito', sans-serif;
     font-size: 32px;
-    color: #00ff00;
-    text-shadow: 0 0 10px #00ff00;
+    color: #2d5d4c;
     margin-bottom: 10px;
 }
 
 h4 {
-    color: #00ff00;
-    text-shadow: 0 0 8px #00ff00;
+    color: #2d5d4c;
+    margin-bottom: 10px;
 }
 
-/* Neon effect spans */
-span {
-    font-weight: bold;
-}
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -118,10 +104,10 @@ span {
 Daily Target:
 <input type="number" id="dailyTarget" value="100"><br><br>
 
-<button onclick="tap()">Tap</button>
-<button onclick="reset()">Reset</button>
-<button onclick="start()">Auto</button>
-<button onclick="stop()">Stop</button>
+<button id="tapBtn">Tap</button>
+<button id="resetBtn">Reset</button>
+<button id="startBtn">Auto</button>
+<button id="stopBtn">Stop</button>
 
 <div class="card">
 <h4>📊 Count</h4>
@@ -132,53 +118,78 @@ Streak: <span id="streak">0</span> days 🔥
 </div>
 
 <script>
-let count=parseInt(localStorage.getItem("count"))||0;
-let daily=parseInt(localStorage.getItem("daily"))||0;
-let weekly=parseInt(localStorage.getItem("weekly"))||0;
-let monthly=parseInt(localStorage.getItem("monthly"))||0;
-let streak=parseInt(localStorage.getItem("streak"))||0;
+// Initialize variables
+let count = parseInt(localStorage.getItem("count")) || 0;
+let daily = parseInt(localStorage.getItem("daily")) || 0;
+let weekly = parseInt(localStorage.getItem("weekly")) || 0;
+let monthly = parseInt(localStorage.getItem("monthly")) || 0;
+let streak = parseInt(localStorage.getItem("streak")) || 0;
 
-let lastDay=localStorage.getItem("day");
-let today=new Date().getDate();
+let lastDay = localStorage.getItem("day");
+let today = new Date().getDate();
 
-if(lastDay!=today){
-    if(daily>=localStorage.getItem("target")){
+// Reset daily count if new day
+if (lastDay != today) {
+    if (daily >= localStorage.getItem("target")) {
         streak++;
     }
-    daily=0;
-    localStorage.setItem("day",today);
+    daily = 0;
+    localStorage.setItem("day", today);
 }
 
+// Update display
 update();
 
-let auto;
+let autoInterval = null;
 
-function tap(){
+// Functions
+function tap() {
     count++; daily++; weekly++; monthly++;
-    save(); update();
+    save();
+    update();
 }
 
-function reset(){ count=0; save(); update(); }
-
-function start(){ auto=setInterval(tap,1500); }
-function stop(){ clearInterval(auto); }
-
-function update(){
-    document.getElementById("counter").innerText=count;
-    document.getElementById("daily").innerText=daily;
-    document.getElementById("weekly").innerText=weekly;
-    document.getElementById("monthly").innerText=monthly;
-    document.getElementById("streak").innerText=streak;
-    localStorage.setItem("target",document.getElementById("dailyTarget").value);
+function reset() {
+    count = 0;
+    save();
+    update();
 }
 
-function save(){
-    localStorage.setItem("count",count);
-    localStorage.setItem("daily",daily);
-    localStorage.setItem("weekly",weekly);
-    localStorage.setItem("monthly",monthly);
-    localStorage.setItem("streak",streak);
+function start() {
+    if (autoInterval === null) {  // prevent multiple intervals
+        autoInterval = setInterval(tap, 1500);
+    }
 }
+
+function stop() {
+    if (autoInterval !== null) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+    }
+}
+
+function update() {
+    document.getElementById("counter").innerText = count;
+    document.getElementById("daily").innerText = daily;
+    document.getElementById("weekly").innerText = weekly;
+    document.getElementById("monthly").innerText = monthly;
+    document.getElementById("streak").innerText = streak;
+    localStorage.setItem("target", document.getElementById("dailyTarget").value);
+}
+
+function save() {
+    localStorage.setItem("count", count);
+    localStorage.setItem("daily", daily);
+    localStorage.setItem("weekly", weekly);
+    localStorage.setItem("monthly", monthly);
+    localStorage.setItem("streak", streak);
+}
+
+// Attach event listeners
+document.getElementById("tapBtn").addEventListener("click", tap);
+document.getElementById("resetBtn").addEventListener("click", reset);
+document.getElementById("startBtn").addEventListener("click", start);
+document.getElementById("stopBtn").addEventListener("click", stop);
 </script>
 
 </body>
