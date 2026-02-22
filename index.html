@@ -10,17 +10,31 @@ body {
     font-family: 'Orbitron', Arial, sans-serif;
     text-align: center;
     background: #000000;
-    color: #00fffa;
+    color: #00ff00;
     margin: 0;
     padding-top: 30px;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* Fade-in for welcoming effect */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Main counter display */
 #counter {
     font-size: 80px;
     margin: 20px;
-    color: #00fffa;
-    text-shadow: 0 0 20px #00fffa, 0 0 40px #00fffa;
+    color: #00ff00;
+    text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00;
+    animation: pulse 2s infinite;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+    0%, 100% { text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 60px #00ff00; }
+    50% { text-shadow: 0 0 30px #00ff00, 0 0 60px #00ff00, 0 0 90px #00ff00; }
 }
 
 /* Cards */
@@ -31,8 +45,14 @@ body {
     width: 90%;
     max-width: 400px;
     border-radius: 15px;
-    border: 2px solid #00fffa;
-    box-shadow: 0 0 20px #00fffa50;
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 20px #00ff2250;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 40px #00ff2270;
 }
 
 /* Buttons */
@@ -41,7 +61,7 @@ button {
     margin: 8px;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(90deg, #00fffa, #0066ff);
+    background: linear-gradient(90deg, #00ff00, #008000);
     color: black;
     font-weight: bold;
     font-size: 16px;
@@ -52,32 +72,34 @@ button {
 
 button:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 20px #00fffa;
+    box-shadow: 0 0 20px #00ff00;
 }
 
 /* Input for target */
 input[type="number"] {
     padding: 8px;
     border-radius: 10px;
-    border: 2px solid #00fffa;
+    border: 2px solid #00ff00;
     background: #111111;
-    color: #00fffa;
+    color: #00ff00;
     width: 80px;
     text-align: center;
     font-weight: bold;
+    font-size: 16px;
 }
 
 /* Headings */
 h2 {
     font-family: 'Orbitron', sans-serif;
     font-size: 32px;
-    color: #00fffa;
-    text-shadow: 0 0 10px #00fffa;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+    margin-bottom: 10px;
 }
 
 h4 {
-    color: #00fffa;
-    text-shadow: 0 0 8px #00fffa;
+    color: #00ff00;
+    text-shadow: 0 0 8px #00ff00;
 }
 
 /* Neon effect spans */
@@ -90,7 +112,7 @@ span {
 
 <body>
 
-<h2>Auto Tasbih Counter</h2>
+<h2>Welcome to Your Tasbih Counter 🌿</h2>
 <div id="counter">0</div>
 
 Daily Target:
