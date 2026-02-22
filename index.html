@@ -5,30 +5,23 @@
 <title>Auto Tasbih Counter</title>
 
 <style>
-/* Calm and peaceful base */
+/* Calm and peaceful base with soft gradient */
 body {
     font-family: 'Nunito', Arial, sans-serif;
     text-align: center;
-    background: #f0f7f4;  /* soft pastel green */
-    color: #2d5d4c;
     margin: 0;
     padding: 40px 20px;
     overflow: hidden;
+    background: linear-gradient(120deg, #e0f7f4, #d0f0e7);
+    animation: backgroundShift 20s ease-in-out infinite alternate;
+    color: #2d5d4c;
 }
 
-/* Floating leaf animation */
-.leaf {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Green_leaf_icon.svg/1200px-Green_leaf_icon.svg.png') no-repeat center/contain;
-    opacity: 0.6;
-    animation: floatLeaf linear infinite;
-}
-
-@keyframes floatLeaf {
-    0% { transform: translateY(100vh) rotate(0deg); }
-    100% { transform: translateY(-10vh) rotate(360deg); }
+/* Background gradient animation */
+@keyframes backgroundShift {
+    0% { background: linear-gradient(120deg, #e0f7f4, #d0f0e7); }
+    50% { background: linear-gradient(120deg, #d0f0e7, #c0e8de); }
+    100% { background: linear-gradient(120deg, #e0f7f4, #d0f0e7); }
 }
 
 /* Main counter display */
@@ -66,7 +59,7 @@ button {
     margin: 8px;
     border: none;
     border-radius: 15px;
-    background-color: #81c784;  /* soft green */
+    background-color: #81c784;
     color: #ffffff;
     font-weight: bold;
     font-size: 16px;
@@ -79,7 +72,7 @@ button:hover {
     transform: scale(1.05);
 }
 
-/* Input for target */
+/* Inputs */
 input[type="number"], select {
     padding: 10px;
     border-radius: 10px;
@@ -108,6 +101,21 @@ h4 {
 /* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
 
+/* Floating leaf animation */
+.leaf {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Green_leaf_icon.svg/1200px-Green_leaf_icon.svg.png') no-repeat center/contain;
+    opacity: 0.6;
+    animation: floatLeaf linear infinite;
+}
+
+@keyframes floatLeaf {
+    0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0.6; }
+    50% { opacity: 0.9; }
+    100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0.6; }
+}
 </style>
 </head>
 
@@ -124,7 +132,8 @@ Daily Target:
 
 <!-- Auto interval selection -->
 <select id="autoIntervalSelect">
-    <option value="1500">1.5 seconds</option>
+    <option value="1000">1 second</option>
+    <option value="1500" selected>1.5 seconds</option>
     <option value="2000">2 seconds</option>
     <option value="3000">3 seconds</option>
 </select>
