@@ -1,126 +1,107 @@
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Digital Tasbih</title>
+<title>Auto Tasbih Counter</title>
 
 <style>
-body{
-  font-family:Arial;
-  text-align:center;
-  background:#0f172a;
-  color:white;
-  margin-top:50px;
-}
-#counter{font-size:70px;margin:10px;}
-button{
-  font-size:16px;
-  padding:12px 20px;
-  margin:5px;
-  border:none;
-  border-radius:10px;
-}
-.progress{
-  width:80%;
-  height:20px;
-  background:#1e293b;
-  margin:auto;
-  border-radius:10px;
-}
-.bar{
-  height:100%;
-  width:0%;
-  background:#22c55e;
-  border-radius:10px;
-}
+body{font-family:Arial;text-align:center;background:#0f172a;color:white;margin-top:20px;}
+#counter{font-size:60px;margin:10px;}
+.card{background:#1e293b;padding:10px;margin:10px auto;width:85%;border-radius:10px;}
+button{padding:10px;margin:4px;border:none;border-radius:10px;}
+canvas{background:white;border-radius:10px;}
 </style>
 </head>
 
 <body>
 
-<h2 id="dhikr">SubhanAllah</h2>
+<h2>Auto Tasbih Counter</h2>
 <div id="counter">0</div>
 
-<div class="progress">
-  <div class="bar" id="bar"></div>
-</div>
-<br>
-
-<select id="target">
-<option value="33">33</option>
-<option value="99">99</option>
-<option value="100">100</option>
-</select>
-
-<select id="speed">
-<option value="1000">Auto 1s</option>
-<option value="1500" selected>Auto 1.5s</option>
-<option value="2000">Auto 2s</option>
-</select>
-<br><br>
+Daily Target:
+<input type="number" id="dailyTarget" value="100"><br><br>
 
 <button onclick="tap()">Tap</button>
 <button onclick="reset()">Reset</button>
-<br>
 <button onclick="start()">Auto</button>
 <button onclick="stop()">Stop</button>
 
+<div class="card">
+<h4>🏆 Leaderboard</h4>
+Daily: <span id="daily">0</span><br>
+Weekly: <span id="weekly">0</span><br>
+Monthly: <span id="monthly">0</span><br>
+Streak: <span id="streak">0</span> days 🔥
+</div>
+
+<div class="card">
+<h4>📊 Weekly Progress</h4>
+<canvas id="chart" width="300" height="150"></canvas>
+</div>
+
 <script>
-let count = localStorage.getItem("count") || 0;
-let dhikrList=["SubhanAllah","Alhamdulillah","Allahu Akbar"];
-let dhikrIndex=0;
-let auto;
+let count=parseInt(localStorage.getItem("count"))||0;
+let daily=parseInt(localStorage.getItem("daily"))||0;
+let weekly=parseInt(localStorage.getItem("weekly"))||0;
+let monthly=parseInt(localStorage.getItem("monthly"))||0;
+let streak=parseInt(localStorage.getItem("streak"))||0;
+
+let lastDay=localStorage.getItem("day");
+let today=new Date().getDate();
+
+if(lastDay!=today){
+if(daily>=localStorage.getItem("target")){
+streak++;
+}
+daily=0;
+localStorage.setItem("day",today);
+}
 
 update();
+drawChart();
+
+let auto;
 
 function tap(){
-  count++;
-  save();
-  check();
-  update();
+count++;daily++;weekly++;monthly++;
+save();update();drawChart();
 }
 
-function reset(){
-  count=0;
-  dhikrIndex=0;
-  save();
-  update();
-}
+function reset(){count=0;save();update();}
 
-function start(){
-  let speed=document.getElementById("speed").value;
-  auto=setInterval(tap,speed);
-}
-
-function stop(){
-  clearInterval(auto);
-}
-
-function check(){
-  let target=document.getElementById("target").value;
-  if(count%33==0 && count!=0){
-    navigator.vibrate(100);
-    dhikrIndex=(dhikrIndex+1)%3;
-    document.getElementById("dhikr").innerText=dhikrList[dhikrIndex];
-  }
-  if(count>=target){
-    stop();
-  }
-}
+function start(){auto=setInterval(tap,1500);}
+function stop(){clearInterval(auto);}
 
 function update(){
-  document.getElementById("counter").innerText=count;
-  let target=document.getElementById("target").value;
-  document.getElementById("bar").style.width=(count/target)*100+"%";
+document.getElementById("counter").innerText=count;
+document.getElementById("daily").innerText=daily;
+document.getElementById("weekly").innerText=weekly;
+document.getElementById("monthly").innerText=monthly;
+document.getElementById("streak").innerText=streak;
+localStorage.setItem("target",document.getElementById("dailyTarget").value);
 }
 
 function save(){
-  localStorage.setItem("count",count);
+localStorage.setItem("count",count);
+localStorage.setItem("daily",daily);
+localStorage.setItem("weekly",weekly);
+localStorage.setItem("monthly",monthly);
+localStorage.setItem("streak",streak);
+}
+
+function drawChart(){
+let c=document.getElementById("chart");
+let ctx=c.getContext("2d");
+ctx.clearRect(0,0,300,150);
+let data=JSON.parse(localStorage.getItem("weekData"))||[0,0,0,0,0,0,0];
+data[new Date().getDay()]=daily;
+localStorage.setItem("weekData",JSON.stringify(data));
+for(let i=0;i<7;i++){
+ctx.fillRect(i*40,150-data[i]/2,30,data[i]/2);
+}
 }
 </script>
 
 </body>
 </html>
+
